@@ -1,0 +1,51 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+
+configurations {
+    //android gradle3.4以后 不要使用lintChecks 否则aar包中不会包含jar文件
+    lintPublish
+}
+
+dependencies {
+    //android gradle3.4以后 不要使用lintChecks 否则aar包中不会包含jar文件
+    lintPublish project(path: ":redline_jar", configuration: "lintPublish")
+}
+
+task copyLintJar(type: Copy){
+    from (configurations.lintChecks) {
+        rename {
+            String fileName ->
+                'lint.jar'
+        }
+    }
+    into 'build/intermediates/lint/'
+}
+
+
+project.afterEvaluate{
+    def compileLintTask = project.tasks.find {it.name == 'prepareLintJar'}
+    compileLintTask.dependsOn(copyLintJar)
+}

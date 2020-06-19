@@ -1,0 +1,4 @@
+rootProject.name='RedLine'
+include ':app'
+include ':redline_aar'
+include ':redline_jar'
