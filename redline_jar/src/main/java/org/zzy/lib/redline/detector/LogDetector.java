@@ -33,8 +33,8 @@ public class LogDetector extends Detector implements Detector.UastScanner {
 
     public static final Issue ISSUE = Issue.create(
             "org.zzy.redline.log",
-            "Log",
-            "Don't use system log class directly Please.",
+            "不要直接使用系统的Log类",
+            "不要直接使用系统的Log类，改用自己封装的Log类！",
             Category.CORRECTNESS,
             6,
             Severity.ERROR,
