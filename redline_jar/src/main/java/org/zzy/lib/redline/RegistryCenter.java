@@ -4,6 +4,7 @@ import com.android.tools.lint.client.api.IssueRegistry;
 import com.android.tools.lint.detector.api.ApiKt;
 import com.android.tools.lint.detector.api.Issue;
 
+import org.zzy.lib.redline.detector.ActivityFragmentLayoutNameDetector;
 import org.zzy.lib.redline.detector.BaseActivityFragmentDetector;
 import org.zzy.lib.redline.detector.ChineseStringDetector;
 import org.zzy.lib.redline.detector.ConstantNameDetector;
@@ -11,6 +12,7 @@ import org.zzy.lib.redline.detector.ForDepthDetector;
 import org.zzy.lib.redline.detector.LogDetector;
 import org.zzy.lib.redline.detector.MessageObtainDetector;
 import org.zzy.lib.redline.detector.ThreadDetector;
+import org.zzy.lib.redline.detector.ViewIDPrefixDetector;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +36,10 @@ public class RegistryCenter extends IssueRegistry {
                 ConstantNameDetector.ISSUE,
                 ForDepthDetector.ISSUE,
                 BaseActivityFragmentDetector.ISSUE,
-                MessageObtainDetector.ISSUE
+//                MessageObtainDetector.ISSUE,
+                ViewIDPrefixDetector.ISSUE,
+                ActivityFragmentLayoutNameDetector.FRAGMENT_LAYOUT_PREFIX_ISSUE,
+                ActivityFragmentLayoutNameDetector.ACTIVITY_LAYOUT_PREFIX_ISSUE
                 );
     }
 

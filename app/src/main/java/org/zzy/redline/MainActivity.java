@@ -82,5 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void testMessage(){
         Message  message = new Message();
+        Person person = new Person("zzy",30);
+        Person personOne = new Person();
     }
 }
