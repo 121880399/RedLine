@@ -29,13 +29,14 @@ configurations {
     lintPublish
 }
 
+
 dependencies {
     //android gradle3.4以后 不要使用lintChecks 否则aar包中不会包含jar文件
     lintPublish project(path: ":redline_jar", configuration: "lintPublish")
 }
 
 task copyLintJar(type: Copy){
-    from (configurations.lintChecks) {
+    from (configurations.lintPublish) {
         rename {
             String fileName ->
                 'lint.jar'
@@ -46,6 +47,6 @@ task copyLintJar(type: Copy){
 
 
 project.afterEvaluate{
-    def compileLintTask = project.tasks.find {it.name == 'prepareLintJar'}
+    def compileLintTask = project.tasks.find {it.name == 'compileLint'}
     compileLintTask.dependsOn(copyLintJar)
 }

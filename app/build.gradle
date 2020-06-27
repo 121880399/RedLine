@@ -29,18 +29,10 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation project(':redline_aar')
+    compile 'androidx.appcompat:appcompat:1.1.0'
+    compile 'androidx.constraintlayout:constraintlayout:1.1.3'
+    compile project(':redline_aar')
 }
 
-/**
- * 在执行 assembleDebug Task 之前挂载 lintDebug
- */
-project.afterEvaluate {
-    def assembleDebugTask = project.tasks.find { it.name == 'assembleDebug' }
-    def lintTask = project.tasks.find { it.name == 'lintDebug' }
-    assembleDebugTask.dependsOn(lintTask)
-}

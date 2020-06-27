@@ -1,13 +1,11 @@
 package org.zzy.lib.redline.detector;
 
 import com.android.SdkConstants;
-import com.android.resources.ResourceUrl;
+import com.android.ide.common.resources.ResourceUrl;
 import com.android.tools.lint.detector.api.Category;
-import com.android.tools.lint.detector.api.Detector;
 import com.android.tools.lint.detector.api.Implementation;
 import com.android.tools.lint.detector.api.Issue;
 import com.android.tools.lint.detector.api.LayoutDetector;
-import com.android.tools.lint.detector.api.LintUtils;
 import com.android.tools.lint.detector.api.Scope;
 import com.android.tools.lint.detector.api.Severity;
 import com.android.tools.lint.detector.api.XmlContext;
@@ -19,7 +17,6 @@ import org.w3c.dom.Element;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Locale;
 
 /**
  * ================================================

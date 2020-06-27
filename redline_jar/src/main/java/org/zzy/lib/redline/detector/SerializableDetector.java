@@ -7,11 +7,11 @@ import com.android.tools.lint.detector.api.Issue;
 import com.android.tools.lint.detector.api.JavaContext;
 import com.android.tools.lint.detector.api.Scope;
 import com.android.tools.lint.detector.api.Severity;
+import com.intellij.psi.JavaElementVisitor;
+import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiClassType;
-
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.uast.UAnonymousClass;
-import org.jetbrains.uast.UClass;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReferenceExpression;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,9 +25,9 @@ import java.util.List;
  * 修订历史：未经测试
  * ================================================
  */
-class SerializableDetector extends Detector implements Detector.UastScanner{
+public class SerializableDetector extends Detector implements Detector.JavaPsiScanner{
 
-    private static final String CLASS_SERIALIZABLE = "java.io.Serializable";
+    private static final String CLASS_SERIALIZABLE = "Serializable";
 
     public static final Issue ISSUE = Issue.create(
             "InnerClassSerializable",
@@ -36,44 +36,52 @@ class SerializableDetector extends Detector implements Detector.UastScanner{
             Category.SECURITY, 5, Severity.ERROR,
             new Implementation(SerializableDetector.class, Scope.JAVA_FILE_SCOPE));
 
-    @Nullable
+
     @Override
-    public List<String> applicableSuperClasses() {
-        //父类是"java.io.Serializable"
-        return Collections.singletonList(CLASS_SERIALIZABLE);
+    public List<Class<? extends PsiElement>> getApplicablePsiTypes() {
+        return Collections.singletonList(PsiClass.class);
     }
 
-    /**
-     * 扫描到applicableSuperClasses()指定的list时,回调该方法
-     */
     @Override
-    public void visitClass(JavaContext context, UClass declaration) {
-        //只从最外部开始向内部类递归检查
-        if (declaration instanceof UAnonymousClass) {
-            return;
-        }
-        sortClass(context, declaration);
-    }
+    public JavaElementVisitor createPsiVisitor(JavaContext context) {
+        return new JavaElementVisitor() {
+            @Override
+            public void visitReferenceExpression(PsiReferenceExpression psiReferenceExpression) {
 
-    private void sortClass(JavaContext context, UClass declaration) {
-        for (UClass uClass : declaration.getInnerClasses()) {
-            sortClass(context, uClass);
+            }
 
-            //判断是否继承了Serializable并提示
-            boolean hasImpled = false;
-            for (PsiClassType psiClassType : uClass.getImplementsListTypes()) {
-                if (CLASS_SERIALIZABLE.equals(psiClassType.getCanonicalText())) {
-                    hasImpled = true;
-                    break;
+            @Override
+            public void visitClass(PsiClass aClass) {
+                PsiClassType[] implementsListTypes = aClass.getImplementsListTypes();
+                boolean flag;
+                for (PsiClassType type:implementsListTypes) {
+                    flag = false;
+                    //如果该类实现了Serializable，那么检测它的内部类是否也继承
+                    if(type!=null){
+                        String className = type.getClassName();
+                        if(className.contains(CLASS_SERIALIZABLE)){
+                            flag = true;
+                            PsiClass[] allInnerClasses = aClass.getInnerClasses();
+                            for (PsiClass clazz :allInnerClasses) {
+                                if(clazz != null){
+                                    PsiClassType[] implementsList = clazz.getImplementsListTypes();
+                                    for (PsiClassType impType :implementsList) {
+                                        if(impType.getClassName().contains(CLASS_SERIALIZABLE)){
+                                            break;
+                                        }
+                                    }
+                                    context.report(ISSUE,aClass,context.getLocation(aClass),aClass.getQualifiedName()+"的内部类"+clazz.getQualifiedName()+"也需要实现Serializable接口!");
+                                }
+                            }
+                        }
+                    }
+                    if(flag){
+                        return;
+                    }
                 }
             }
-            if (!hasImpled) {
-                context.report(ISSUE,
-                        uClass.getNameIdentifier(),
-                        context.getLocation(uClass.getNameIdentifier()),
-                        String.format("内部类 `%1$s` 需要实现Serializable接口", uClass.getName()));
-            }
-
-        }
+        };
     }
+
+
 }

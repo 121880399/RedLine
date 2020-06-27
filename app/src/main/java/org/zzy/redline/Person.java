@@ -1,5 +1,7 @@
 package org.zzy.redline;
 
+import java.io.Serializable;
+
 /**
  * ================================================
  * 作    者：ZhouZhengyi
@@ -8,9 +10,10 @@ package org.zzy.redline;
  * 修订历史：
  * ================================================
  */
-class Person {
+class Person implements Serializable {
     private String name;
     private int age;
+    private Head head;
 
     public Person(){
 
@@ -37,5 +40,26 @@ class Person {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    class Head{
+        private String eye;
+        private String ear;
+
+        public String getEye() {
+            return eye;
+        }
+
+        public void setEye(String eye) {
+            this.eye = eye;
+        }
+
+        public String getEar() {
+            return ear;
+        }
+
+        public void setEar(String ear) {
+            this.ear = ear;
+        }
     }
 }

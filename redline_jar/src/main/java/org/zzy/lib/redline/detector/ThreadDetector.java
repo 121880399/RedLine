@@ -7,13 +7,12 @@ import com.android.tools.lint.detector.api.Issue;
 import com.android.tools.lint.detector.api.JavaContext;
 import com.android.tools.lint.detector.api.Scope;
 import com.android.tools.lint.detector.api.Severity;
-import com.intellij.psi.PsiMethod;
+import com.intellij.psi.JavaElementVisitor;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
+import com.intellij.psi.PsiNewExpression;
+import com.intellij.psi.PsiReferenceExpression;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.uast.UCallExpression;
-
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,7 +24,9 @@ import java.util.List;
  * 修订历史：
  * ================================================
  */
-public class ThreadDetector extends Detector implements Detector.UastScanner {
+public class ThreadDetector extends Detector implements Detector.JavaPsiScanner {
+
+    private static final String THREAD="java.lang.Thread";
 
     public static final Issue ISSUE = Issue.create(
             "org.zzy.redline.newThread",
@@ -40,16 +41,34 @@ public class ThreadDetector extends Detector implements Detector.UastScanner {
             )
     );
 
-    @Nullable
     @Override
-    public List<String> getApplicableConstructorTypes() {
-        return Collections.singletonList("java.lang.Thread");
+    public List<Class<? extends com.intellij.psi.PsiElement>> getApplicablePsiTypes() {
+        return Arrays.asList(PsiNewExpression.class);
     }
 
+
     @Override
-    public void visitConstructor(@NotNull JavaContext context, @NotNull UCallExpression node, @NotNull PsiMethod constructor) {
-        if(context.getProject().isAndroidProject()){
-            context.report(ISSUE,node,context.getLocation(node),"避免直接创建Thread");
-        }
+    public JavaElementVisitor createPsiVisitor(JavaContext context) {
+        return new JavaElementVisitor() {
+            @Override
+            public void visitReferenceExpression(PsiReferenceExpression psiReferenceExpression) {
+            }
+
+            @Override
+            public void visitNewExpression(PsiNewExpression expression) {
+                PsiJavaCodeReferenceElement classReference = expression.getClassReference();
+                if(classReference != null){
+                    String qualifyName =classReference.getQualifiedName();
+                    if(qualifyName!=null && qualifyName.equals(THREAD)){
+                        context.report(
+                                ISSUE,
+                                expression,
+                                context.getLocation(expression),
+                                "避免直接使用new Thread()创建线程！"
+                        );
+                    }
+                }
+            }
+        };
     }
 }

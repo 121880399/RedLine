@@ -9,11 +9,9 @@ import com.android.tools.lint.detector.api.JavaContext;
 import com.android.tools.lint.detector.api.Scope;
 import com.android.tools.lint.detector.api.Severity;
 import com.intellij.psi.JavaElementVisitor;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiNewExpression;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiReferenceExpression;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,8 +25,8 @@ import java.util.List;
  * 修订历史：该类暂时没有测试通过
  * ================================================
  */
-@Deprecated
-public class MessageObtainDetector extends Detector implements Detector.UastScanner {
+
+public class MessageObtainDetector extends Detector implements Detector.JavaPsiScanner {
 
     private static final String MESSAGE="android.os.Message";
 
@@ -45,32 +43,34 @@ public class MessageObtainDetector extends Detector implements Detector.UastScan
             )
     );
 
-
-    @Nullable
     @Override
-    public List<Class<? extends PsiElement>> getApplicablePsiTypes() {
+    public List<Class<? extends com.intellij.psi.PsiElement>> getApplicablePsiTypes() {
         return Arrays.asList(PsiNewExpression.class);
     }
 
 
-    @Nullable
     @Override
-    public JavaElementVisitor createPsiVisitor(@NotNull JavaContext context) {
-        return new JavaElementVisitor(){
+    public JavaElementVisitor createPsiVisitor(JavaContext context) {
+        return new JavaElementVisitor() {
             @Override
-            public void visitNewExpression(PsiNewExpression expression) {
-                String qualifyName =expression.getClassReference().getQualifiedName();
-                if(qualifyName.equals(MESSAGE)){
-                    context.report(
-                            ISSUE,
-                            expression,
-                            context.getLocation(expression),
-                            "请使用Message.obtain()来获取Message对象！"
-                    );
-                }
+            public void visitReferenceExpression(PsiReferenceExpression psiReferenceExpression) {
             }
 
-
+            @Override
+            public void visitNewExpression(PsiNewExpression expression) {
+                PsiJavaCodeReferenceElement classReference = expression.getClassReference();
+                if(classReference != null){
+                    String qualifyName =classReference.getQualifiedName();
+                    if(qualifyName!=null && qualifyName.equals(MESSAGE)){
+                        context.report(
+                                ISSUE,
+                                expression,
+                                context.getLocation(expression),
+                                "请使用Message.obtain()来获取Message对象！"
+                        );
+                    }
+                }
+            }
         };
     }
 

@@ -3,12 +3,23 @@
 buildscript {
     
     repositories {
-        google()
         jcenter()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0'
+        //不要升级gralde插件版本，3.0.0不能进入IssueRegistry
+        //3.4.0开始gradle插件会包含lint-gralde-api6.4.0 里面包含了
+        //lint-api 6.4.0等版本，如果在redline_jar里面使用了lint-api 25.3.0那么
+        //在IssueRegistry的getIssues方法中会报找不到Detector.JavaPsiScanner
+        //因为运行时会使用lint6.4.0版本，在这个版本中JavaPsiScanner已经被删除了
+        //为什么在redline_jar中使用lint 6.4.0版本呢？因为UAST没有androistrudio
+        //插件，分析起来很困难，而且文档解释，资料太少，基本靠方法名猜，所以采用
+        //25.3.0版本，可以通过PsiViewer进行分析
+        classpath 'com.android.tools.build:gradle:2.3.3'
         
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -18,8 +29,11 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
         jcenter()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
 
     }
 }
