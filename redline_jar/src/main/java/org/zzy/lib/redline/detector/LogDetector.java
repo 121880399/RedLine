@@ -26,7 +26,7 @@ import java.util.List;
 public class LogDetector extends Detector implements Detector.JavaPsiScanner {
 
     public static final Issue ISSUE = Issue.create(
-            "org.zzy.redline.log",
+            "org.zzy.redline.Log",
             "不要直接使用系统的Log类",
             "不要直接使用系统的Log类，改用自己封装的Log类！",
             Category.CORRECTNESS,

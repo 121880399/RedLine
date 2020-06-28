@@ -22,26 +22,19 @@ import java.util.List;
  * ================================================
  * 作    者：ZhouZhengyi
  * 创建日期：2020/6/19 17:36
- * 描    述：检测Activity和Fragment中的布局是否以
+ * 描    述：检测Activity中的布局是否以
  * activity_和fragment_开头。
- * 比如:activity_main.xml fragment_main.xml
- * 做法：
- * 通过判断在调用setContentView和inflate方法时的布局名称
- * 修订历史：
+ * 比如:activity_main.xml
  * ================================================
  */
-public class ActivityFragmentLayoutNameDetector extends Detector implements Detector.JavaPsiScanner {
+public class ActivityLayoutNameDetector extends Detector implements Detector.JavaPsiScanner {
 
     private static final String SETCONTENTVIEW = "setContentView";
-    private static final String INFLATE = "inflate";
     private static final String ACTIVITYPREFIX = "activity_";
-    private static final String FRAGMENTPREFIX = "fragment_";
 
     private static final String ANDROIDX_APPCOMPATACTIVITY = "androidx.appcompat.app.AppCompatActivity";
     private static final String V7_APPCOMPATACTIVITY = "android.support.v7.app.AppCompatActivity";
-    private static final String V4_FRAGMENT = "android.support.v4.app.Fragment";
-    private static final String ANDROIDX_FRAGMENT = "androidx.fragment.app.Fragment";
-    private static final String APP_FRAGMENT = "android.app.Fragment";
+
 
     public static final Issue ACTIVITY_LAYOUT_PREFIX_ISSUE=Issue.create(
             "org.zzy.redline.ActivityLayoutPrefix",
@@ -51,28 +44,18 @@ public class ActivityFragmentLayoutNameDetector extends Detector implements Dete
             7,
             Severity.WARNING,
             new Implementation(
-                    ActivityFragmentLayoutNameDetector.class,
+                    ActivityLayoutNameDetector.class,
                     Scope.JAVA_FILE_SCOPE
             )
     );
 
-    public static final Issue FRAGMENT_LAYOUT_PREFIX_ISSUE=Issue.create(
-            "org.zzy.redline.ActivityLayoutPrefix",
-            "Fragment布局前缀名应该以fragment_开头",
-            "Fragment布局前缀名应该以fragment_开头",
-            Category.TYPOGRAPHY,
-            7,
-            Severity.WARNING,
-            new Implementation(
-                    ActivityFragmentLayoutNameDetector.class,
-                    Scope.JAVA_FILE_SCOPE
-            )
-    );
 
     @Override
     public List<String> getApplicableMethodNames() {
-        return Arrays.asList(SETCONTENTVIEW,INFLATE);
+        return Arrays.asList(SETCONTENTVIEW);
     }
+
+
 
 
     /**
@@ -88,33 +71,19 @@ public class ActivityFragmentLayoutNameDetector extends Detector implements Dete
         if(qualifiedName == null || qualifiedName.isEmpty()){
             return;
         }
-        boolean isActivity = false;
-        boolean isFragment = false;
         if(qualifiedName.equals(ANDROIDX_APPCOMPATACTIVITY) || qualifiedName.equals(V7_APPCOMPATACTIVITY)){
-           isActivity=true;
-        }
-
-        if(qualifiedName.equals(V4_FRAGMENT) || qualifiedName.equals(ANDROIDX_FRAGMENT) || qualifiedName.equals(APP_FRAGMENT)){
-            isFragment = true;
-        }
-        if(!isActivity && !isFragment){
-            return;
-        }
-        PsiExpressionList argumentList = call.getArgumentList();
-        if(argumentList!=null){
-            PsiExpression[] expressions = argumentList.getExpressions();
-            if(expressions!=null && expressions.length > 0){
-                PsiReferenceExpression layoutID = (PsiReferenceExpression) expressions[0];
-                if(layoutID!=null){
-                    String referenceName = layoutID.getReferenceName();
-                    if(referenceName!=null && !referenceName.isEmpty()){
-                        if(isActivity && !layoutXmlIsStartWithPrefix(referenceName,ACTIVITYPREFIX)){
-                            context.report(ACTIVITY_LAYOUT_PREFIX_ISSUE,call,context.getLocation(call),"Activity布局前缀名应该以activity_开头");
-                            return;
-                        }
-                        if(isFragment && !layoutXmlIsStartWithPrefix(referenceName,FRAGMENTPREFIX)){
-                            context.report(FRAGMENT_LAYOUT_PREFIX_ISSUE,call,context.getLocation(call),"Fragment布局前缀名应该以fragment_开头");
-                            return;
+            PsiExpressionList argumentList = call.getArgumentList();
+            if(argumentList!=null){
+                PsiExpression[] expressions = argumentList.getExpressions();
+                if(expressions!=null && expressions.length > 0){
+                    PsiReferenceExpression layoutID = (PsiReferenceExpression) expressions[0];
+                    if(layoutID!=null){
+                        String referenceName = layoutID.getReferenceName();
+                        if(referenceName!=null && !referenceName.isEmpty()){
+                            if(!layoutXmlIsStartWithPrefix(referenceName,ACTIVITYPREFIX)){
+                                context.report(ACTIVITY_LAYOUT_PREFIX_ISSUE,call,context.getLocation(call),"Activity布局前缀名应该以activity_开头");
+                                return;
+                            }
                         }
                     }
                 }
