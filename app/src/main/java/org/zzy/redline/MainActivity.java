@@ -1,11 +1,11 @@
 package org.zzy.redline;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "redline";
@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         testThread();
         testForDepth();
         testMessage();
+        testPrintStackTrace();
     }
 
     private void testChineseString(){
@@ -84,5 +85,18 @@ public class MainActivity extends AppCompatActivity {
         Message  message = new Message();
         Person person = new Person("zzy",30);
         Person personOne = new Person();
+    }
+
+
+    private void testPrintStackTrace(){
+        try {
+            exceptionMethod();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
+    private void exceptionMethod() throws Throwable{
+
     }
 }
