@@ -16,7 +16,7 @@ configurations {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile  "com.android.tools.lint:lint-api:25.3.0"
+    compile 'com.android.tools.lint:lint-api:25.3.0'
     compile  "com.android.tools.lint:lint-checks:25.3.0"
     compileOnly 'org.projectlombok:lombok:1.18.12'
     compile 'com.intellij:openapi:7.0.3'

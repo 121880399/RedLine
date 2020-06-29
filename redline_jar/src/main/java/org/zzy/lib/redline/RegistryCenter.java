@@ -6,9 +6,11 @@ import com.android.tools.lint.detector.api.Issue;
 import org.zzy.lib.redline.detector.ActivityLayoutNameDetector;
 import org.zzy.lib.redline.detector.ChineseStringDetector;
 import org.zzy.lib.redline.detector.ConstantNameDetector;
+import org.zzy.lib.redline.detector.EnumDetector;
 import org.zzy.lib.redline.detector.ForDepthDetector;
 import org.zzy.lib.redline.detector.LogDetector;
 import org.zzy.lib.redline.detector.MessageObtainDetector;
+import org.zzy.lib.redline.detector.ParseDetector;
 import org.zzy.lib.redline.detector.PrintStackTraceDetector;
 import org.zzy.lib.redline.detector.SerializableDetector;
 import org.zzy.lib.redline.detector.ThreadDetector;
@@ -39,7 +41,9 @@ public class RegistryCenter extends IssueRegistry {
                 ConstantNameDetector.ISSUE,
                 ForDepthDetector.ISSUE,
                 ChineseStringDetector.ISSUE,
-                ActivityLayoutNameDetector.ACTIVITY_LAYOUT_PREFIX_ISSUE
+                ActivityLayoutNameDetector.ACTIVITY_LAYOUT_PREFIX_ISSUE,
+                ParseDetector.ISSUE,
+                EnumDetector.ISSUE
         );
     }
 

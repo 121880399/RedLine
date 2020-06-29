@@ -24,7 +24,7 @@ import java.util.List;
  * 创建日期：2020/6/19 17:36
  * 描    述：检测Activity中的布局是否以
  * activity_和fragment_开头。
- * 比如:activity_main.xml
+ * 比如:at_main.xml
  * ================================================
  */
 public class ActivityLayoutNameDetector extends Detector implements Detector.JavaPsiScanner {

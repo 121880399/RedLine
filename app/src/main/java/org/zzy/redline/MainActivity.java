@@ -1,8 +1,14 @@
 package org.zzy.redline;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,13 +16,14 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "redline";
 
+    //检测常量名不是大写的情况
     public static final int testConstant = 1;
 
     private TextView mTvName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fm_main);
+        setContentView(R.layout.at_main);
         mTvName = findViewById(R.id.tv_name);
         testChineseString();
         testLog();
@@ -24,7 +31,18 @@ public class MainActivity extends AppCompatActivity {
         testForDepth();
         testMessage();
         testPrintStackTrace();
+        testParse();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_POWER_CONNECTED);
+        registerReceiver(systemReceiver,filter);
     }
+
+    private BroadcastReceiver systemReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        }
+    };
 
     private void testChineseString(){
         mTvName.setText("你好");
@@ -97,6 +115,50 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void exceptionMethod() throws Throwable{
+        
+    }
+    
+    private void testTodo(){
+        // TODO: 2020/6/29 测试todo
+        int i = 1;
+    }
 
+    private void testParse(){
+        ImageView ivColor = findViewById(R.id.color);
+        ivColor.setBackgroundColor(Color.parseColor("0x112323"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(systemReceiver);
+    }
+
+    public enum ColorEnum{
+        RED("红色",1),GREEN("绿色",2),BLANK("白色",3);
+
+        private String name;
+        private int index;
+
+        ColorEnum(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
     }
 }
