@@ -1,4 +1,6 @@
-apply plugin: 'com.android.application'
+apply plugin:'com.android.application'
+apply plugin:'redline'
+
 
 android {
     compileSdkVersion 29

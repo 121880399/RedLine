@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/redline_aar" />
             <option value="$PROJECT_DIR$/redline_jar" />
+            <option value="$PROJECT_DIR$/redline_plugin" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -18,6 +18,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.tools.lint:lint-api:25.3.0'
     compile  "com.android.tools.lint:lint-checks:25.3.0"
+    compile  "com.android.tools.lint:lint:25.3.0"
+//    compile  "com.android.tools.lint:lint-gradle:26.3.2"
     compileOnly 'org.projectlombok:lombok:1.18.12'
     compile 'com.intellij:openapi:7.0.3'
     compile 'com.google.guava:guava:29.0-android'

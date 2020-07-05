@@ -3,12 +3,18 @@
 buildscript {
     
     repositories {
+        maven {
+            credentials {
+                username "${mavenUser}"
+                password "${mavenPassword}"
+            }
+            url 'http://127.0.0.1:8081/repository/maven-snapshots/'
+        }
         jcenter()
         maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
-
     }
     dependencies {
         //不要升级gralde插件版本，3.0.0不能进入IssueRegistry
@@ -20,7 +26,7 @@ buildscript {
         //插件，分析起来很困难，而且文档解释，资料太少，基本靠方法名猜，所以采用
         //25.3.0版本，可以通过PsiViewer进行分析
         classpath 'com.android.tools.build:gradle:2.3.3'
-        
+        classpath 'org.zzy.plugin:redline:1.0.0-SNAPSHOT'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -29,12 +35,17 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            credentials {
+                username "${mavenUser}"
+                password "${mavenPassword}"
+            }
+            url 'http://127.0.0.1:8081/repository/maven-snapshots/'}
         jcenter()
         maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
-
     }
 }
 

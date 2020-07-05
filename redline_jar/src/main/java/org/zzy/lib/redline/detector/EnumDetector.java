@@ -39,6 +39,7 @@ public class EnumDetector extends Detector implements Detector.JavaPsiScanner {
     );
 
 
+
     @Override
     public List<Class<? extends PsiElement>> getApplicablePsiTypes() {
         return Collections.singletonList(PsiClass.class);
@@ -58,6 +59,7 @@ public class EnumDetector extends Detector implements Detector.JavaPsiScanner {
                     context.report(ISSUE,aClass,context.getLocation(aClass),"请不要使用枚举类！考虑采用注解替换！");
                 }
             }
+
         };
     }
 }
