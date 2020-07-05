@@ -2,7 +2,6 @@ package org.zzy.plugin.redline;
 
 import com.android.tools.lint.LintCliClient;
 import com.android.tools.lint.client.api.LintRequest;
-import com.android.tools.lint.detector.api.Project;
 
 import java.io.File;
 import java.util.List;
@@ -18,14 +17,13 @@ import java.util.List;
  */
 class LintGitClient extends LintCliClient {
 
+
     @Override
     protected LintRequest createLintRequest(List<File> files) {
         LintRequest request = super.createLintRequest(files);
-        for (Project project : request.getProjects()) {
-            for (File file : files) {
-                project.addFile(file);
-            }
+        if(request == null){
+            request = new LintRequest(this,files);
         }
-        return new LintRequest(this, files);
+        return request;
     }
 }

@@ -1,9 +1,8 @@
 package org.zzy.plugin.redline
 
-import com.android.tools.lint.checks.BuiltinIssueRegistry;
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-
+import com.android.tools.lint.checks.BuiltinIssueRegistry
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 /**
  * ================================================
  * 作    者：ZhouZhengyi
@@ -14,14 +13,9 @@ import org.gradle.api.Project;
  */
 class RedlinePlugin implements Plugin<Project> {
 
-    //低于1.8.5的Git版本使用--diff-filter=ACMRTUXB，高于可以用--diff-filter=d 来排除已经删除的文件
-    //HEAD~1是前一个commit，HEAD~0是当前的commit
-    private static final String GIT_COMMAND = "git diff --name-only --diff-filter=ACMRTUXB HEAD~1 HEAD~0"
-
     @Override
     void apply(Project project) {
-        //<<跟doLast功能一样
-        project.task("IncrementLint") << {
+        project.task("IncrementLint").doLast{
             println("=========== IncrementLint  start ==============")
             //1.得到需要检查的文件列表
             List<String> allFileName = getCommitChange(project)
@@ -41,6 +35,9 @@ class RedlinePlugin implements Plugin<Project> {
 
             //2.开始lint检查,BuiltinIssueRegistry 系统定义的问题集
             lintGitClient.run(new BuiltinIssueRegistry(),allFiles)
+//            if(flag.reporters.size() > 0){
+//                throw Throwable()
+//            }
         }
 
         //根据不同系统将脚本赋值到.git/hooks/文件夹下
@@ -67,7 +64,7 @@ class RedlinePlugin implements Plugin<Project> {
                 Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
             }
         }
-        
+
     }
 
     /**
@@ -77,7 +74,9 @@ class RedlinePlugin implements Plugin<Project> {
      */
     static List<String> getCommitChange(Project project) {
         try {
-            String changeInfo = GIT_COMMAND.execute(null, project.getRootDir().text.trim())
+            String projectDir = project.getRootDir().getAbsolutePath()
+            String command = "git diff --name-only --diff-filter=ACMRTUXB HEAD~0 $projectDir"
+            String changeInfo = command.execute(null, project.getRootDir()).text.trim()
             if (changeInfo == null || changeInfo.isEmpty()) {
                 return new ArrayList<String>()
             }

@@ -1,24 +1,4 @@
-#!/bin/sh.exe
+#!D:/git/bin/sh.exe
 ./gradlew IncrementLint
+exit 0
 
-status=$?
-
-if["$status" = 0] ; then
-   echo "
-    ....
-    ....
-    IncrementLint Pass
-    ....
-    ....
-    "
-    exit 0
-else
-    echo "
-    ....
-    ....
-    IncrementLint Failed!!
-    ....
-    ....
-    "
-    exit 1
-fi
