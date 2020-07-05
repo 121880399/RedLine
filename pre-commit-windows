@@ -1,4 +1,12 @@
 #!D:/git/bin/sh.exe
 ./gradlew IncrementLint
 exit 0
-
+status=$?
+ echo "Task status:${status}"
+if [ "${status}" == '0' ]; then
+    echo "IncrementLint pass"
+    exit 0
+else
+    echo "IncrementLint fail"
+    exit 1
+fi
