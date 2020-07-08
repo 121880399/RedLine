@@ -14,6 +14,9 @@ class Person implements Serializable {
     private String name;
     private int age;
     private Head head;
+    private int sexy;
+
+
 
     public Person(){
 
