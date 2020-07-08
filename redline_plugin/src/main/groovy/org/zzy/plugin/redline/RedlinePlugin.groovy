@@ -1,6 +1,7 @@
 package org.zzy.plugin.redline
 
-
+import com.android.tools.lint.HtmlReporter
+import com.android.tools.lint.Reporter
 import com.android.tools.lint.checks.BuiltinIssueRegistry
 import com.google.common.collect.Lists
 import org.gradle.api.Plugin
@@ -40,7 +41,12 @@ class RedlinePlugin implements Plugin<Project> {
             lintGitClient.setCustomViewRuleJars(getLintJar(project))
             def flag = lintGitClient.flags
             flag.setExitCode = true
-            //2.开始lint检查,BuiltinIssueRegistry 系统定义的问题集
+
+            //2.设置输出报告
+            File reportFile = new File(project.rootDir,"lint-check-result.html")
+            Reporter reporter = new HtmlReporter(lintGitClient,reportFile,flag)
+            flag.reporters.add(reporter)
+            //3.开始lint检查,BuiltinIssueRegistry 系统定义的问题集
             lintGitClient.run(new BuiltinIssueRegistry(),allFiles)
         }
 

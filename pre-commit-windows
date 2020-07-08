@@ -1,5 +1,5 @@
 #!D:/git/bin/sh.exe
-./gradlew build && ./gradlew IncrementLint
+./gradlew IncrementLint
 status=$?
  echo "Task status:${status}"
 if [ "${status}" == '0' ]; then

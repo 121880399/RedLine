@@ -67,6 +67,9 @@ public class ActivityLayoutNameDetector extends Detector implements Detector.Jav
     @Override
     public void visitMethod(JavaContext context, JavaElementVisitor visitor, PsiMethodCallExpression call, PsiMethod method) {
         PsiClass containingClass = method.getContainingClass();
+        if(containingClass==null){
+            return;
+        }
         String qualifiedName = containingClass.getQualifiedName();
         if(qualifiedName == null || qualifiedName.isEmpty()){
             return;
