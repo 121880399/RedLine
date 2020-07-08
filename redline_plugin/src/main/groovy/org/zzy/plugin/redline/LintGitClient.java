@@ -76,4 +76,13 @@ class LintGitClient extends LintCliClient {
         return Collections.emptyList();
     }
 
+    /**
+    * 返回错误数量，结果值为错误数量+警告数量
+    * 作者: ZhouZhengyi
+    * 创建时间: 2020/7/8 21:41
+    */
+    public int getErrorCount(){
+        return errorCount+warningCount;
+    }
+
 }

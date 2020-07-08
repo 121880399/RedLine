@@ -6,7 +6,7 @@ uploadArchives {
         mavenDeployer {
             pom.groupId = "org.zzy.plugin"
             pom.artifactId = "redline"
-            pom.version = "1.1.11-SNAPSHOT"
+            pom.version = "1.1.12-SNAPSHOT"
             //要上传的maven仓库地址
             repository(url:"http://127.0.0.1:8081/repository/maven-snapshots/") {
                 authentication(userName: "admin", password: "admin123")

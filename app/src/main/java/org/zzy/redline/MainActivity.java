@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "redline";
 
     //检测常量名不是大写的情况
-    public static final int testConstant = 6;
+    public static final int testConstant = 1;
 
     private TextView mTvName;
     @Override

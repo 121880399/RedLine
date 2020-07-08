@@ -48,6 +48,9 @@ class RedlinePlugin implements Plugin<Project> {
             flag.reporters.add(reporter)
             //3.开始lint检查,BuiltinIssueRegistry 系统定义的问题集
             lintGitClient.run(new BuiltinIssueRegistry(),allFiles)
+            if(lintGitClient.getErrorCount() > 0){
+                return 1
+            }
         }
 
         //根据不同系统将脚本赋值到.git/hooks/文件夹下
