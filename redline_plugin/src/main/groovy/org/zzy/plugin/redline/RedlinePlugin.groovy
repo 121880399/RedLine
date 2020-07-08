@@ -1,8 +1,16 @@
 package org.zzy.plugin.redline
 
+
 import com.android.tools.lint.checks.BuiltinIssueRegistry
+import com.google.common.collect.Lists
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.DependencySet
+
+import static java.io.File.separator
+import static java.io.File.separatorChar
+
 /**
  * ================================================
  * 作    者：ZhouZhengyi
@@ -15,7 +23,7 @@ class RedlinePlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        project.task("IncrementLint").doLast{
+        project.task("incrementLint").doLast{
             println("=========== IncrementLint  start ==============")
             //1.得到需要检查的文件列表
             List<String> allFileName = getCommitChange(project)
@@ -28,16 +36,12 @@ class RedlinePlugin implements Plugin<Project> {
             }
             println("need cheched files size:"+allFiles.size())
             println(System.getenv("ANDROID_HOME"))
-
             def lintGitClient = new LintGitClient()
+            lintGitClient.setCustomViewRuleJars(getLintJar(project))
             def flag = lintGitClient.flags
             flag.setExitCode = true
-
             //2.开始lint检查,BuiltinIssueRegistry 系统定义的问题集
             lintGitClient.run(new BuiltinIssueRegistry(),allFiles)
-//            if(flag.reporters.size() > 0){
-//                throw Throwable()
-//            }
         }
 
         //根据不同系统将脚本赋值到.git/hooks/文件夹下
@@ -65,6 +69,62 @@ class RedlinePlugin implements Plugin<Project> {
             }
         }
 
+    }
+
+    /**
+     * 遍历所有Project，找出自定义Lint.jar
+     * */
+    static List<File> getLintJar(Project project){
+        def allprojects = project.getRootProject().getChildProjects()
+        List<File> customRuleJars = Lists.newArrayList()
+        for (Map.Entry<String, Project>  entrySet: allprojects.entrySet()){
+            File appLintJar = new File(entrySet.getValue().getBuildDir(),
+                    "intermediates"+separatorChar+"lint" + separatorChar + "lint.jar")
+            if (appLintJar.exists()) {
+                customRuleJars.add(appLintJar)
+            }
+        }
+        return customRuleJars
+    }
+
+
+
+    /**
+     * 得到gradle plugin版本号
+     * */
+    static String getGradleVersion(Project project){
+        DependencySet dependencySet = project.getRootProject().buildscript.getConfigurations().getByName("classpath").dependencies
+        def version
+        for(Dependency dependency : dependencySet){
+            if(dependency.group.equals("com.android.tools.build") && dependency.name.equals("gradle")){
+                version = dependency.version
+                break
+            }
+        }
+        if(version == null){
+            println("gradle plugin not exist!")
+        }
+        println("gradle version:"+version)
+        return version
+    }
+
+
+
+    /**
+     * 导出获得android gradle plugin插件的版本号，build.gradle中apply后可直接使用getAndroidGradlePluginVersionCompat()
+     */
+    @SuppressWarnings("GrMethodMayBeStatic")
+    String getAndroidGradlePluginVersionCompat() {
+        String version = null
+        try {
+            Class versionModel = Class.forName("com.android.builder.model.Version")
+            def versionFiled = versionModel.getDeclaredField("ANDROID_GRADLE_PLUGIN_VERSION")
+            versionFiled.setAccessible(true)
+            version = versionFiled.get(null)
+        } catch (Exception e) {
+            version = "unknown"
+        }
+        return version
     }
 
     /**

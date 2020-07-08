@@ -26,7 +26,7 @@ buildscript {
         //插件，分析起来很困难，而且文档解释，资料太少，基本靠方法名猜，所以采用
         //25.3.0版本，可以通过PsiViewer进行分析
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'org.zzy.plugin:redline:1.0.14-SNAPSHOT'
+        classpath 'org.zzy.plugin:redline:1.1.9-SNAPSHOT'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -41,7 +41,8 @@ allprojects {
                 username "${mavenUser}"
                 password "${mavenPassword}"
             }
-            url 'http://127.0.0.1:8081/repository/maven-snapshots/'}
+            url 'http://127.0.0.1:8081/repository/maven-snapshots/'
+        }
         jcenter()
         maven {
             url 'https://maven.google.com/'

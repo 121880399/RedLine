@@ -14,16 +14,26 @@ configurations {
     lintPublish
 }
 
+
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.tools.lint:lint-api:25.3.0'
-    compile  "com.android.tools.lint:lint-checks:25.3.0"
-    compile  "com.android.tools.lint:lint:25.3.0"
-//    compile  "com.android.tools.lint:lint-gradle:26.3.2"
+    compile 'com.android.tools.lint:lint-api:25.3.3'
+    compile  "com.android.tools.lint:lint-checks:25.3.3"
+    compile  "com.android.tools.lint:lint:25.3.3"
+//    compile  ('com.android.tools.lint:lint-gradle:26.1.0'){
+//        exclude module:'lint-api'
+//        exclude module:'lint'
+//        exclude module:'lint-checks'
+//        exclude module:'sdk-common'
+//    }
+    compile "com.android.tools.build:gradle:2.3.3"
     compileOnly 'org.projectlombok:lombok:1.18.12'
     compile 'com.intellij:openapi:7.0.3'
     compile 'com.google.guava:guava:29.0-android'
-    compile 'com.android.tools.external.lombok:lombok-ast:0.2.3'
+    compile ('com.android.tools.external.lombok:lombok-ast:0.2.3'){
+        exclude module:'guava'
+    }
     //android gradle3.4以后 不要使用lintChecks 否则aar包中不会包含jar文件
     lintPublish files(jar)
 }
