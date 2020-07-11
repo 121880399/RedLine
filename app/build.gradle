@@ -30,6 +30,12 @@ android {
 
 }
 
+redLineConfig{
+    excludeDirs = ["redline_jar/src/main/java/org/zzy/lib/redline/detector","redline_plugin/src/main/groovy/org/zzy/plugin/redline"]
+    excludeFiles = ["lint-check-result.html"]
+}
+
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 

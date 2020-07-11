@@ -28,6 +28,13 @@ class Person implements Serializable {
     }
 
 
+    public int getSexy() {
+        return sexy;
+    }
+
+    public void setSexy(int sexy) {
+        this.sexy = sexy;
+    }
 
     public String getName() {
         return name;

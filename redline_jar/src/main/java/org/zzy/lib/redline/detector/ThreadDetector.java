@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class ThreadDetector extends Detector implements Detector.JavaPsiScanner {
 
-    private static final String THREAD="Thread";
+    private static final String THREAD="java.lang.Thread";
 
     public static final Issue ISSUE = Issue.create(
             "org.zzy.redline.newThread",

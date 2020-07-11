@@ -24,10 +24,17 @@ class RedlinePlugin implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
+        project.extensions.create("redLineConfig",RedLineExtension.class)
         project.task("incrementLint").doLast{
             println("=========== IncrementLint  start ==============")
             //1.得到需要检查的文件列表
             List<String> allFileName = getCommitChange(project)
+
+            //2.过滤排除的文件和目录
+            RedLineExtension extension = project.getExtensions().getByType(RedLineExtension.class)
+            allFileName = removeDir(allFileName,extension.excludeDirs)
+            allFileName = removeFile(allFileName,extension.excludeFiles)
+            getGradleVersion(project)
             List<File> allFiles = new ArrayList<>()
             File file
             for(String fileName : allFileName){
@@ -38,18 +45,20 @@ class RedlinePlugin implements Plugin<Project> {
             println("need cheched files size:"+allFiles.size())
             println(System.getenv("ANDROID_HOME"))
             def lintGitClient = new LintGitClient()
+            lintGitClient.setProject(project)
             lintGitClient.setCustomViewRuleJars(getLintJar(project))
             def flag = lintGitClient.flags
             flag.setExitCode = true
 
-            //2.设置输出报告
+            //3.设置输出报告
             File reportFile = new File(project.rootDir,"lint-check-result.html")
             Reporter reporter = new HtmlReporter(lintGitClient,reportFile,flag)
             flag.reporters.add(reporter)
-            //3.开始lint检查,BuiltinIssueRegistry 系统定义的问题集
+            //4.开始lint检查,BuiltinIssueRegistry 系统定义的问题集
             lintGitClient.run(new BuiltinIssueRegistry(),allFiles)
             if(lintGitClient.getErrorCount() > 0){
-                return 1
+                //如果有错误，故意造成异常来中断commit
+                lintGitClient.getAssetFolders(flag)
             }
         }
 
@@ -78,6 +87,39 @@ class RedlinePlugin implements Plugin<Project> {
             }
         }
 
+    }
+
+    /**
+     * 删除排除掉的文件
+     * */
+    static List<String> removeFile(List<String> origin,List<String> excludeFile){
+        if(origin == null || origin.size() <= 0 || excludeFile == null || excludeFile.size() <= 0){
+            return origin
+        }
+        List<String> result = new ArrayList<>()
+        result.addAll(origin)
+        result.removeAll(excludeFile)
+        return result
+    }
+
+
+    /**
+     * 删除排除掉的目录
+     * */
+    static List<String> removeDir(List<String> origin,List<String> excludeDir){
+        if(origin == null || origin.size() <= 0 || excludeDir == null || excludeDir.size() <= 0){
+            return origin
+        }
+        List<String> result = new ArrayList<>()
+        result.addAll(origin)
+        for(String dir : excludeDir){
+            for(String checkFile : origin){
+                if(checkFile.contains(dir)){
+                    result.remove(checkFile)
+                }
+            }
+        }
+        return result
     }
 
     /**

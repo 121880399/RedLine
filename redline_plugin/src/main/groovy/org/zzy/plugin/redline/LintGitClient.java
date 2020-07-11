@@ -3,27 +3,16 @@ package org.zzy.plugin.redline;
 import com.android.SdkConstants;
 import com.android.annotations.NonNull;
 import com.android.builder.model.AndroidLibrary;
-import com.android.builder.model.AndroidProject;
-import com.android.builder.model.Variant;
 import com.android.tools.lint.LintCliClient;
 import com.android.tools.lint.client.api.CircularDependencyException;
 import com.android.tools.lint.client.api.LintRequest;
-import com.android.tools.lint.detector.api.LintUtils;
 import com.android.tools.lint.detector.api.Project;
+import com.android.tools.lint.gradle.LintGradleProject;
 import com.google.common.collect.Lists;
 
-import org.gradle.api.plugins.ExtraPropertiesExtension;
-import org.gradle.tooling.provider.model.ToolingModelBuilder;
-import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry;
-
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * ================================================
@@ -37,6 +26,7 @@ import java.util.Map;
 class LintGitClient extends LintCliClient {
 
     public List<File> customViewRuleJars = Lists.newArrayList();
+    org.gradle.api.Project mProject;
 
     @Override
     protected LintRequest createLintRequest(List<File> files) {
@@ -51,6 +41,9 @@ class LintGitClient extends LintCliClient {
         this.customViewRuleJars.addAll(files);
     }
 
+    public void setProject(org.gradle.api.Project project){
+        this.mProject = project;
+    }
 
     @Override
     public List<File> findRuleJars(Project project) {
@@ -74,6 +67,18 @@ class LintGitClient extends LintCliClient {
         }
 
         return Collections.emptyList();
+    }
+
+
+
+    @Override
+    protected Project createProject(File dir, File referenceDir) {
+        if (projectDirs.contains(dir)) {
+            throw new CircularDependencyException(
+                    "Circular library dependencies; check your project.properties files carefully");
+        }
+        projectDirs.add(dir);
+        return new CustomProject(this,dir,referenceDir,mProject);
     }
 
     /**
