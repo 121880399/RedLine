@@ -1,6 +1,6 @@
 # 红线
 <h1 align="center">
-  <img src="https://raw.githubusercontent.com/121880399/PictureManager/master/%E7%BA%A2%E7%BA%BF.png" height="340" width="340"  alt="logo" />
+  <img src="https://raw.githubusercontent.com/121880399/PictureManager/master/%E7%BA%A2%E7%BA%BF.png" height="340" alt="logo" />
  </h1>
 
 ![](https://img.shields.io/badge/language-java-orange.svg)
